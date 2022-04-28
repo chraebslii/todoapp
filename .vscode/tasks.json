@@ -1,0 +1,21 @@
+{
+	"version": "2.0.0",
+	"tasks": [
+		{
+			"label": "tsc: watch - user/tsconfig.json",
+			"type": "shell",
+			"problemMatcher": ["$tsc-watch"],
+			"command": "cd src/ && npx tsc -w",
+			"windows": {
+				"command": "cd src/ && npx tsc -w"
+			},
+			"presentation": {
+				"reveal": "always",
+				"panel": "new"
+			},
+			"runOptions": {
+				"runOn": "folderOpen"
+			}
+		}
+	]
+}
