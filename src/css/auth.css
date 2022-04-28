@@ -1,0 +1,7 @@
+/* color border if validation is ok or not */
+input.validated-true {
+	border-color: var(--inp-bor-foc-color);
+}
+input.validated-false {
+	border-color: var(--inp-bor-foc-color-false);
+}
