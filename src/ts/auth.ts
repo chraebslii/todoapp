@@ -55,12 +55,12 @@ function validateRegex(id: string, regex: RegExp): boolean {
 	const input = document.getElementById(id) as HTMLInputElement;
 
 	if (input.value.match(regex)) {
-		input.style.outlineColor = "var(--inp-bor-foc-color)";
-		input.setAttribute("class", "validated-true");
+		input.classList.add("validated-true");
+		input.classList.remove("validated-false");
 		return true;
 	} else {
-		input.style.outlineColor = "var(--inp-bor-foc-color-false)";
-		input.setAttribute("class", "validated-false");
+		input.classList.remove("validated-true");
+		input.classList.add("validated-false");
 		return false;
 	}
 }
@@ -70,7 +70,6 @@ function validateRegex(id: string, regex: RegExp): boolean {
  * @returns {boolean} true if regex is ok
  */
 function validateEmail(): boolean {
-	// regex source: https://stackoverflow.com/
 	return validateRegex(
 		"email",
 		/^(([^<>()[\]\.,;:\s@\"]+(\.[^<>()[\]\.,;:\s@\"]+)*)|(\".+\"))@(([^<>()[\]\.,;:\s@\"]+\.)+[^<>()[\]\.,;:\s@\"]{2,})$/
@@ -82,7 +81,6 @@ function validateEmail(): boolean {
  * @returns {boolean} true if regex is ok
  */
 function validatePassword(): boolean {
-	// regex created with: https://regex101.com/
 	return validateRegex("password", /^(?=.*\d).{6,}$/);
 }
 
@@ -91,7 +89,6 @@ function validatePassword(): boolean {
  * @returns {boolean} true if regex is ok
  */
 function validateUsername(): boolean {
-	// regex created with: https://regex101.com/
 	return validateRegex("username", /^[A-Za-z][A-Za-z0-9_]{3,30}$/);
 }
 

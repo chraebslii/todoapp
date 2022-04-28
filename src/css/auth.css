@@ -1,7 +1,11 @@
-/* color border if validation is ok or not */
-input.validated-true {
-	border-color: var(--inp-bor-foc-color);
+/** -------------------------------- input color -------------------------------- */
+input.validated-true,
+input.validated-true:focus-visible {
+	border-color: var(--bor-foc-color-true);
+	outline-color: var(--bor-foc-color-true);
 }
-input.validated-false {
-	border-color: var(--inp-bor-foc-color-false);
+input.validated-false,
+input.validated-false:focus-visible {
+	border-color: var(--bor-foc-color-false);
+	outline-color: var(--bor-foc-color-false);
 }

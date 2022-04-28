@@ -1,12 +1,150 @@
 @import url("https://fonts.googleapis.com/css2?family=Roboto:ital,wght@0,300;0,500;1,300&display=swap");
 
-/* colors */
+/** -------------------------------- colors -------------------------------- */
 :root {
-	--inp-bor-foc-color: #5cff46;
-	--inp-bor-foc-color-false: #ff4c46;
+	--text-prim-color: #ffffff;
+	--text-sec-color: #000000;
+	--bg-color: #0e101cdb;
+
+	--btn-bg-color: #ffffff1e;
+	--btn-hov-color: #ffffff48;
+
+	--btn-prim-bg-color: #1e5bb772;
+	--btn-prim-hov-color: #4b77ba72;
+
+	--inp-bg-color: #ffffff2c;
+	--inp-hov-color: #ffffff46;
+	--inp-foc-color: #ffffff6e;
+
+	--bor-foc-color-true: #5cff46;
+	--bor-foc-color-false: #ff4c46;
+
+	--ico-bg-color: #0000000f;
+	--ico-hov-color: #0000003b;
 }
 
-/* for hidden forms */
+/** -------------------------------- css reset -------------------------------- */
+* {
+	margin: 0;
+	padding: 0;
+	font-family: "Roboto", sans-serif;
+	box-sizing: border-box;
+	font-size: 16px;
+}
+a,
+a:hover {
+	text-decoration: none;
+	color: var(--text-prim-color);
+}
+body {
+	width: 100vw;
+	height: 100vh;
+}
+
+/** -------------------------------- global -------------------------------- */
+.f {
+	display: flex;
+}
+.c {
+	justify-content: center;
+}
+.a {
+	align-items: center;
+}
+.row {
+	flex-direction: row;
+}
+.col {
+	flex-direction: column;
+}
+.gap1 {
+	gap: 1rem;
+}
+
+/** -------------------------------- font styles -------------------------------- */
+.f16 {
+	font-size: 16px;
+}
+.f18 {
+	font-size: 18px;
+}
+.f24 {
+	font-size: 24px;
+}
+.f28 {
+	font-size: 28px;
+}
+.f36 {
+	font-size: 36px;
+}
+
+p,
+span,
+a,
+a:visited,
+input,
+button {
+	color: var(--text-prim-color);
+}
+
+/** -------------------------------- hidden -------------------------------- */
 .hidden {
 	display: none;
 }
+
+/** -------------------------------- width & height -------------------------------- */
+.w100 {
+	width: 100%;
+	height: fit-content;
+}
+.h100 {
+	height: 100%;
+}
+
+/** -------------------------------- input & buttons -------------------------------- */
+.input {
+	justify-content: space-between;
+	padding: 0.2rem;
+	width: 100%;
+}
+.input input,
+.input button {
+	padding: 0.5rem;
+	width: 49%;
+}
+.input.full input,
+.input.full button {
+	width: 100%;
+	padding: 0.5rem;
+}
+
+/** -------------------------------- interaction & effects -------------------------------- */
+.btn {
+	background-color: var(--btn-bg-color);
+	border-radius: 5px;
+	border-color: #ffffff00;
+	transition: background-color 1s;
+}
+input,
+textarea {
+	background-color: var(--inp-bg-color);
+	transition: background-color 1s;
+}
+
+/** -------------------------------- animation -------------------------------- */
+.btn:hover {
+	background-color: var(--btn-hov-color);
+}
+input:hover,
+textarea:hover {
+	background-color: var(--inp-hov-color);
+	border-color: var(--bor-hov-color);
+}
+input:focus,
+textarea:focus {
+	background-color: var(--inp-foc-color);
+	outline-color: var(--bor-foc-color);
+	border: 2px solid var(--bor-foc-color);
+}
+
+/** -------------------------------- media -------------------------------- */

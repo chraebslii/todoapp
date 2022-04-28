@@ -37,13 +37,13 @@ function validation(redirect) {
 function validateRegex(id, regex) {
     const input = document.getElementById(id);
     if (input.value.match(regex)) {
-        input.style.outlineColor = "var(--inp-bor-foc-color)";
-        input.setAttribute("class", "validated-true");
+        input.classList.add("validated-true");
+        input.classList.remove("validated-false");
         return true;
     }
     else {
-        input.style.outlineColor = "var(--inp-bor-foc-color-false)";
-        input.setAttribute("class", "validated-false");
+        input.classList.remove("validated-true");
+        input.classList.add("validated-false");
         return false;
     }
 }
