@@ -1,8 +1,3 @@
-function initElements() {
-    setHeaderToDOM();
-    setFooterToDOM();
-    setMainSize();
-}
 function getRootPath() {
     const path = window.location.pathname.split("/");
     const roots = ["auth"];
@@ -55,4 +50,3 @@ function setMainSize() {
     const windowHeight = window.innerHeight;
     main.style.height = `${windowHeight - headerHeight - footerHeight}px`;
 }
-window.onload = initElements;

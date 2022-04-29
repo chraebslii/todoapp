@@ -21,16 +21,16 @@ while($row = $allLists->fetch_assoc()) {
     $listName = $row['listName'];
     $listUserID = $row['listUserID'];
 
-    echo "$listName ($listID) <br>";
+    //echo "$listName ($listID) <br>";
     $allTasks = getAllTasks($listID);
     while($row = $allTasks->fetch_assoc()) {
         $taskID = $row['taskID'];
         $taskName = $row['taskName'];
         $taskStatus = $row['taskStatus'];
 
-        echo "$taskStatus $taskName ($taskID) <br>";
+        //echo "$taskStatus $taskName ($taskID) <br>";
     }
-    echo "<br><br>";
+    //echo "<br><br>";
 }
 
 ?>
@@ -42,13 +42,21 @@ while($row = $allLists->fetch_assoc()) {
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
     <link rel="stylesheet" href="./css/main.css" />
+    <link rel="stylesheet" href="./css/elements.css" />
     <link rel="shortcut icon" href="./assets/favicon.svg" />
     <title>Todo list | chraebsli.dev</title>
 </head>
 
 <body>
-    <br>
-    <a href="./">Home</a>
+    <header id="header"></header>
+
+    <main id="main" class="main-l main-fh f c a col">
+
+    </main>
+
+    <footer id="footer"></footer>
 </body>
+
+<script src="./js/elements.js"></script>
 
 </html>

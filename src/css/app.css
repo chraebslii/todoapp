@@ -1,0 +1,29 @@
+/** -------------------------------- app -------------------------------- */
+:root {
+	--list-bg-color: #00000037;
+}
+/** -------------------------------- list -------------------------------- */
+#app .list {
+	background-color: var(--list-bg-color);
+}
+#app .list .header {
+	padding: 0.5rem;
+}
+#app .list .add-task img,
+#app .list .toggle-header img {
+	width: 2rem;
+	height: 2rem;
+}
+#app .list .content[data-toggle="closed"] .items-cont-done {
+	display: none;
+}
+/** -------------------------------- item -------------------------------- */
+#app .content {
+	padding: 0.5rem;
+}
+#app .content .items {
+	gap: 0.2rem;
+}
+#app .content .items label {
+	margin-left: 0.5rem;
+}

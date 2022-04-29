@@ -54,6 +54,7 @@ if ($_SERVER['REQUEST_METHOD'] == 'POST'){
     <footer id="footer"></footer>
 </body>
 
+<script src="../js/init.js"></script>
 <script src="../js/auth.js"></script>
 <script src="../js/elements.js"></script>
 

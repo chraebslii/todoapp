@@ -39,6 +39,7 @@ updateCurrentSessionTimeout();
     <footer id="footer"></footer>
 </body>
 
+<script src="./js/init.js"></script>
 <script src="./js/elements.js"></script>
 
 </html>
