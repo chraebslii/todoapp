@@ -13,7 +13,11 @@ if (validateCurrentSession()){
     header('Location: ./auth/login.php');
     exit;
 }
+
 $userID = intval($_SESSION['userID']);
+
+$taskListJSON = json_encode(formatLists(getAllLists($userID)));
+echo "<script type='text/javascript'>window.localStorage.setItem('taskList', JSON.stringify($taskListJSON))</script>";
 
 ?>
 
@@ -35,65 +39,65 @@ $userID = intval($_SESSION['userID']);
 
     <main id="main" class="f col">
         <div class="app" id="app">
-            <?php
-                
-                $allLists = getAllLists($userID);
-                while($row = $allLists->fetch_assoc()) {
-                    $listID = $row['listID'];
-                    $listName = $row['listName'];
-                    $listUserID = $row['listUserID'];
+            <div class="list-cont" id="list-cont">
+                <!-- list container 
+                    <div class="list" id="list-1">
+                        <div class="header f a row">
+                            <span class="list-title f20">Liste 1</span>
+                        </div>
 
-                    // list
-                    echo "<div class='list' id='list-$listID'>";
-                    // list header
-                    echo "<div class='header f a row'><span class='list-title f20'>$listName</span></div>";
+                        <div class="content open f col">
+                            <div class="items-cont-open">
+                                <div class="items task f a row">
+                                    <input type="checkbox" id="li-1-1" name="li-1-1" />
+                                    <span for="li-1-1">List Item 1</span>
+                                </div>
+                                <div class="items task f a row">
+                                    <input type="checkbox" id="li-1-2" name="li-1-2" />
+                                    <span for="li-1-2">List Item 2</span>
+                                </div>
+                                <div class="items task f a row">
+                                    <input type="checkbox" id="li-1-3" name="li-1-3" />
+                                    <span for="li-1-3">List Item 3</span>
+                                </div>
+                                <div class="items task f a row">
+                                    <input type="checkbox" id="li-1-4" name="li-1-4" />
+                                    <span for="li-1-4">List Item 4</span>
+                                </div>
+                            </div>
+                        </div>
 
-                    // open tasks
-                    $allTasks = getAllTasks($listID, 'open');
-                    echo "<div class='content open f col'><div class='items-cont-open'>";
-                    while($row = $allTasks->fetch_assoc()) {
-                        $taskID = $row['taskID'];
-                        $taskName = $row['taskName'];
-                        echo "<div class='items task f a row'>
-                                <input type='checkbox' id='li-$listID-$taskID' name='li-$listID-$taskID' />
-                                <span for='li-$listID-$taskID'>$taskName</span>
-                            </div>";
-                    }
-                    echo "</div></div>";
+                        <div class="add-task">
+                            <img src="./assets/i/plus.svg" alt="plus icon" class="i" onclick="addTask(this)" />
+                        </div>
 
-                    // add task
-                    echo "<div class='add-task'>
-                            <img src='./assets/i/plus.svg' alt='plus icon' class='i' onclick='addTask(this)' />
-                        </div>";
-
-                    // done tasks cont
-                    echo "<div class='content done f col' data-toggle='closed'>";
-                    // header
-                    echo "<div class='toggle-header f a row' onclick='toggleDoneTasks(this)'>
-                            <span>abgehakte</span>
-                            <img src='./assets/i/expand-more.svg' alt='expand icon' class='i toggle-tasks-icon' />
-                        </div>";
-
-                    // done tasks items
-                    $allTasks = getAllTasks($listID, 'done');
-                    echo "<div class='items-cont-done'>";
-                    while($row = $allTasks->fetch_assoc()) {
-                        $taskID = $row['taskID'];
-                        $taskName = $row['taskName'];
-                        echo "<div class='items task f a row'>
-                                <input checked type='checkbox' id='li-$listID-$taskID' name='li-$listID-$taskID' />
-                                <span for='li-$listID-$taskID'>$taskName</span>
-                            </div>";
-                    }
-                    echo "</div>";
-
-                    // close done tasks cont
-                    echo "</div>";
-
-                    // close list
-                    echo "</div>";
-                }
-            ?>
+                        <div class="content done f col" data-toggle="closed">
+                            <div class="toggle-header f a row" onclick="toggleDoneTasks(this)">
+                                <span>abgehakte </span>
+                                <img src="./assets/i/expand-more.svg" alt="expand icon" class="i toggle-tasks-icon" />
+                            </div>
+                            <div class="items-cont-done">
+                                <div class="items task f a row">
+                                    <input checked type="checkbox" id="li-1-5" name="li-1-5" />
+                                    <span for="li-1-5">List Item 5</span>
+                                </div>
+                                <div class="items task f a row">
+                                    <input checked type="checkbox" id="li-1-6" name="li-1-6" />
+                                    <span for="li-1-6">List Item 6</span>
+                                </div>
+                                <div class="items task f a row">
+                                    <input checked type="checkbox" id="li-1-7" name="li-1-7" />
+                                    <span for="li-1-7">List Item 7 </span>
+                                </div>
+                                <div class="items task f a row">
+                                    <input checked type="checkbox" id="li-1-8" name="li-1-8" />
+                                    <span for="li-1-8">List Item 8</span>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                -->
+            </div>
         </div>
     </main>
 
