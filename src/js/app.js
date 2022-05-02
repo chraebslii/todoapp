@@ -1,11 +1,12 @@
-function toggleDoneTasks(e) {
-    const toggleArrow = e.querySelector(".toggle-tasks-icon");
-    if (e.dataset.toggle === "open") {
-        e.dataset.toggle = "closed";
+function toggleDoneTasks(element) {
+    element = element.parentNode;
+    const toggleArrow = element.querySelector(".toggle-tasks-icon");
+    if (element.dataset.toggle === "open") {
+        element.dataset.toggle = "closed";
         toggleArrow.src = "./assets/i/expand-more.svg";
     }
     else {
-        e.dataset.toggle = "open";
+        element.dataset.toggle = "open";
         toggleArrow.src = "./assets/i/expand-less.svg";
     }
 }
@@ -13,11 +14,12 @@ function setEventListenerOnTasks() {
     const tasks = document.querySelectorAll(".task");
     for (let i = 0; i < tasks.length; i++) {
         const task = tasks[i];
-        task.addEventListener("click", toggleTask);
+        task.querySelector("input").addEventListener("input", toggleTask);
+        task.querySelector("span").addEventListener("click", editTask);
     }
 }
 function toggleTask() {
-    const task = this;
+    const task = this.parentNode;
     const input = task.children[0];
     if (input.checked) {
         moveTaskToDoneOrOpen(task, ".items-cont-done");
@@ -37,15 +39,41 @@ function addTask(e) {
     const taskTemplate = `
         <div class="items task f a row">
             <input type="checkbox" id="li-${listID}-${taskID}" name="li-${listID}-${taskID}" />
-            <label for="li-${listID}-${taskID}">new Item</label>
+            <input type="text" class="task-edit" value="" />
         </div>`;
-    const taskElement = new DOMParser().parseFromString(taskTemplate, "text/html").body.firstChild;
+    const taskElement = parseHTML(taskTemplate);
     taskElement.addEventListener("click", toggleTask);
+    taskElement.querySelector(".task-edit").addEventListener("focusout", saveTask);
     document.querySelector(`#list-${listID}`).querySelector(".content.open").appendChild(taskElement);
+    taskElement.querySelector(".task-edit").focus();
 }
 function getListID(list) {
     return parseInt(list.getAttribute("id").split("-")[1]);
 }
 function getNextTaskID(listID) {
     return document.querySelector(`#list-${listID}`).querySelector(".content.open").children.length + 1;
+}
+function editTask() {
+    const task = this.parentNode;
+    const span = task.querySelector("span");
+    const inputTemplate = `
+    <input type="text" class="task-edit"value="${span.innerHTML}" />`;
+    const input = parseHTML(inputTemplate);
+    input.addEventListener("focusout", saveTask);
+    task.removeChild(span);
+    task.appendChild(input);
+    input.focus();
+}
+function saveTask() {
+    const task = this.parentNode;
+    const input = task.querySelector(".task-edit");
+    const spanTemplate = `
+        <span>${input.value}</span>`;
+    const span = parseHTML(spanTemplate);
+    task.removeChild(input);
+    task.appendChild(span);
+    span.addEventListener("click", editTask);
+}
+function parseHTML(html) {
+    return new DOMParser().parseFromString(html, "text/html").body.firstChild;
 }

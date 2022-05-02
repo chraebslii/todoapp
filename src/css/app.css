@@ -24,6 +24,7 @@
 #app .content .items {
 	gap: 0.2rem;
 }
-#app .content .items label {
+#app .content .items span,
+#app .content .items input {
 	margin-left: 0.5rem;
 }

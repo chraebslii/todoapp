@@ -1,14 +1,17 @@
+// ********************************************* toggle tasks *********************************************
+
 /**
  * toggle the visibility of the 'done' list
- * @param e toggle element
+ * @param element toggle element
  */
-function toggleDoneTasks(e: HTMLDivElement) {
-	const toggleArrow = e.querySelector(".toggle-tasks-icon") as HTMLImageElement;
-	if (e.dataset.toggle === "open") {
-		e.dataset.toggle = "closed";
+function toggleDoneTasks(element: HTMLDivElement) {
+	element = element.parentNode as HTMLDivElement;
+	const toggleArrow = element.querySelector(".toggle-tasks-icon") as HTMLImageElement;
+	if (element.dataset.toggle === "open") {
+		element.dataset.toggle = "closed";
 		toggleArrow.src = "./assets/i/expand-more.svg";
 	} else {
-		e.dataset.toggle = "open";
+		element.dataset.toggle = "open";
 		toggleArrow.src = "./assets/i/expand-less.svg";
 	}
 }
@@ -20,7 +23,8 @@ function setEventListenerOnTasks() {
 	const tasks = document.querySelectorAll(".task");
 	for (let i = 0; i < tasks.length; i++) {
 		const task = tasks[i];
-		task.addEventListener("click", toggleTask);
+		task.querySelector("input").addEventListener("input", toggleTask);
+		task.querySelector("span").addEventListener("click", editTask);
 	}
 }
 
@@ -28,7 +32,7 @@ function setEventListenerOnTasks() {
  * move task to done list or open list depending on the current checked state
  */
 function toggleTask() {
-	const task = this as HTMLDivElement;
+	const task = this.parentNode as HTMLDivElement;
 	const input = task.children[0] as HTMLInputElement;
 	if (input.checked) {
 		moveTaskToDoneOrOpen(task, ".items-cont-done");
@@ -47,6 +51,9 @@ function moveTaskToDoneOrOpen(task: HTMLDivElement, selector: string) {
 	const openTasksCont = parentList.querySelector(selector) as HTMLDivElement;
 	openTasksCont.appendChild(task);
 }
+
+// ********************************************* create tasks *********************************************
+
 /**
  * adds an empty task to the todo list
  * @param e element of plus
@@ -57,11 +64,13 @@ function addTask(e: HTMLElement) {
 	const taskTemplate = `
         <div class="items task f a row">
             <input type="checkbox" id="li-${listID}-${taskID}" name="li-${listID}-${taskID}" />
-            <label for="li-${listID}-${taskID}">new Item</label>
+            <input type="text" class="task-edit" value="" />
         </div>`;
-	const taskElement = new DOMParser().parseFromString(taskTemplate, "text/html").body.firstChild as HTMLElement;
+	const taskElement = parseHTML(taskTemplate);
 	taskElement.addEventListener("click", toggleTask);
+	taskElement.querySelector(".task-edit").addEventListener("focusout", saveTask);
 	document.querySelector(`#list-${listID}`).querySelector(".content.open").appendChild(taskElement);
+	(taskElement.querySelector(".task-edit") as HTMLInputElement).focus();
 }
 
 /**
@@ -79,4 +88,45 @@ function getListID(list: HTMLDivElement) {
  */
 function getNextTaskID(listID: number) {
 	return document.querySelector(`#list-${listID}`).querySelector(".content.open").children.length + 1;
+}
+
+// ********************************************* edit tasks *********************************************
+/**
+ * change task to be editable
+ */
+function editTask() {
+	const task = this.parentNode;
+	const span = task.querySelector("span") as HTMLSpanElement;
+	const inputTemplate = `
+    <input type="text" class="task-edit"value="${span.innerHTML}" />`;
+	const input = parseHTML(inputTemplate);
+	input.addEventListener("focusout", saveTask);
+	task.removeChild(span);
+	task.appendChild(input);
+	input.focus();
+}
+
+/**
+ * save task after editing
+ */
+function saveTask() {
+	const task = this.parentNode;
+	const input = task.querySelector(".task-edit") as HTMLInputElement;
+	const spanTemplate = `
+        <span>${input.value}</span>`;
+	const span = parseHTML(spanTemplate);
+	task.removeChild(input);
+	task.appendChild(span);
+	span.addEventListener("click", editTask);
+}
+
+// ********************************************* other *********************************************
+
+/**
+ * parse html string to element
+ * @param html string of html
+ * @returns html element
+ */
+function parseHTML(html: string) {
+	return new DOMParser().parseFromString(html, "text/html").body.firstChild as HTMLElement;
 }
