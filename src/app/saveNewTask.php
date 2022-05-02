@@ -5,12 +5,12 @@ include "../php/app.php";
 
 // check if post request and go on if so
 if ($_SERVER['REQUEST_METHOD'] == 'POST'){
-    $taskID = $_POST['taskID'];
     $taskName = $_POST['taskName'];
+    $listID = $_POST['listID'];
     $taskStatus = $_POST['taskStatus'];
 
     // save to database
-    $sql = "UPDATE tasks SET taskName = '$taskName', taskStatus = '$taskStatus' WHERE taskID = '$taskID'";
+    $sql = "INSERT INTO tasks (taskName, listID, taskStatus) VALUES ('$taskName', '$listID', '$taskStatus')";
     SQLQuery($sql);
 }
 

@@ -100,6 +100,10 @@ function toggleTask() {
     else {
         moveTaskToDoneOrOpen(task, ".items-cont-open");
     }
+    const taskID = getTaskID(input);
+    const taskName = task.children[1].innerHTML;
+    const taskStatus = input.checked ? 1 : 0;
+    saveTaskToDatabase(taskID, taskName, taskStatus);
 }
 function moveTaskToDoneOrOpen(task, selector) {
     const parentList = task.parentNode.parentNode.parentNode;
@@ -141,14 +145,19 @@ function saveTask() {
     const spanTemplate = `
         <span>${input.value}</span>`;
     const span = parseHTML(spanTemplate);
-    const taskID = getTaskID(task.querySelector("input"));
-    saveTaskToDatabase(taskID, input.value);
+    const checkbox = task.querySelector("input");
+    const taskID = getTaskID(checkbox);
+    const taskStatus = checkbox.checked ? 1 : 0;
+    saveTaskToDatabase(taskID, input.value, taskStatus);
     task.removeChild(input);
     task.appendChild(span);
     span.addEventListener("click", editTask);
 }
-function saveTaskToDatabase(taskID, taskName) {
-    saveToDatabase("./app/saveTask.php", { taskID: taskID, taskName: taskName });
+function saveTaskToDatabase(taskID, taskName, taskStatus) {
+    saveToDatabase("./app/saveTask.php", { taskID: taskID, taskName: taskName, taskStatus: taskStatus });
+}
+function saveNewTaskToDatabase(listID, taskName, taskStatus) {
+    saveToDatabase("./app/saveNewTask.php", { listID: listID, taskName: taskName, taskStatus: taskStatus });
 }
 function saveToDatabase(path, params) {
     const form = document.createElement("form");

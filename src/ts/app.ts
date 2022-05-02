@@ -158,6 +158,10 @@ function toggleTask() {
 	} else {
 		moveTaskToDoneOrOpen(task, ".items-cont-open");
 	}
+	const taskID = getTaskID(input);
+	const taskName = task.children[1].innerHTML;
+	const taskStatus = input.checked ? 1 : 0;
+	saveTaskToDatabase(taskID, taskName, taskStatus);
 }
 
 /**
@@ -239,8 +243,14 @@ function saveTask() {
 	const spanTemplate = `
         <span>${input.value}</span>`;
 	const span = parseHTML(spanTemplate);
-	const taskID = getTaskID(task.querySelector("input"));
-	saveTaskToDatabase(taskID, input.value);
+
+	// database handling
+	const checkbox = task.querySelector("input") as HTMLInputElement;
+	const taskID = getTaskID(checkbox);
+	const taskStatus = checkbox.checked ? 1 : 0;
+	saveTaskToDatabase(taskID, input.value, taskStatus);
+
+	// update DOM
 	task.removeChild(input);
 	task.appendChild(span);
 	span.addEventListener("click", editTask);
@@ -248,12 +258,23 @@ function saveTask() {
 
 // ********************************************* save to database *********************************************
 /**
- * save task to database
+ * save existing task to database
  * @param taskID id of task
  * @param taskName name of task
+ * @param taskStatus status of task
  */
-function saveTaskToDatabase(taskID: number, taskName: string) {
-	saveToDatabase("./app/saveTask.php", { taskID: taskID, taskName: taskName });
+function saveTaskToDatabase(taskID: number, taskName: string, taskStatus: 0 | 1) {
+	saveToDatabase("./app/saveTask.php", { taskID: taskID, taskName: taskName, taskStatus: taskStatus });
+}
+
+/**
+ * save new task to database
+ * @param listID id of list
+ * @param taskName name of task
+ * @param taskStatus status of task
+ */
+function saveNewTaskToDatabase(listID: number, taskName: string, taskStatus: 0 | 1) {
+	saveToDatabase("./app/saveNewTask.php", { listID: listID, taskName: taskName, taskStatus: taskStatus });
 }
 
 /**
