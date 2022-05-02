@@ -105,6 +105,7 @@ echo "<script type='text/javascript'>window.localStorage.setItem('taskList', JSO
 </body>
 
 <script src="./js/init.js"></script>
+<script src="./js/functions.js"></script>
 <script src="./js/elements.js"></script>
 <script src="./js/app.js"></script>
 

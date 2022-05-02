@@ -195,6 +195,7 @@ function addTask(plusImg: HTMLElement) {
 function getListID(list: HTMLDivElement) {
 	return parseInt(list.getAttribute("id").split("-")[1]);
 }
+
 /**
  * get next task id of current list
  * @param listID id of list
@@ -232,15 +233,4 @@ function saveTask() {
 	task.removeChild(input);
 	task.appendChild(span);
 	span.addEventListener("click", editTask);
-}
-
-// ********************************************* other *********************************************
-
-/**
- * parse html string to element
- * @param html string of html
- * @returns html element
- */
-function parseHTML(html: string) {
-	return new DOMParser().parseFromString(html, "text/html").body.firstChild as HTMLElement;
 }

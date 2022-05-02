@@ -11,15 +11,6 @@ function setEventListener(inputs) {
         document.getElementById("username").addEventListener("input", validateUsername);
     }
 }
-function disableButton() {
-    const button = document.getElementById("btn");
-    if (validateEmail() && validatePassword()) {
-        button.disabled = false;
-    }
-    else {
-        button.disabled = true;
-    }
-}
 function validation(redirect) {
     if (redirect === "register") {
         if (validateEmail() && validatePassword() && validateUsername()) {
@@ -56,10 +47,16 @@ function validatePassword() {
 function validateUsername() {
     return validateRegex("username", /^[A-Za-z][A-Za-z0-9_]{3,30}$/);
 }
+function disableButton() {
+    const button = document.getElementById("btn");
+    if (validateEmail() && validatePassword()) {
+        button.disabled = false;
+    }
+    else {
+        button.disabled = true;
+    }
+}
 function submitForm() {
     const form = document.getElementById("form");
     form.submit();
-}
-function getQuizLength() {
-    return document.getElementById("questions").childElementCount;
 }

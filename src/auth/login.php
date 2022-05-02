@@ -55,6 +55,7 @@ if ($_SERVER['REQUEST_METHOD'] == 'POST'){
 </body>
 
 <script src="../js/init.js"></script>
+<script src="../js/functions.js"></script>
 <script src="../js/auth.js"></script>
 <script src="../js/elements.js"></script>
 

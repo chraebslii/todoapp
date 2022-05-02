@@ -1,3 +1,4 @@
+// ********************************************* event listeners *********************************************
 /**
  * check input elements
  * @param {string} inputs string of characters to check inputs
@@ -16,18 +17,7 @@ function setEventListener(inputs: string) {
 	}
 }
 
-/**
- * disable button if all inputs are ok
- */
-function disableButton() {
-	const button = document.getElementById("btn") as HTMLButtonElement;
-	if (validateEmail() && validatePassword()) {
-		button.disabled = false;
-	} else {
-		button.disabled = true;
-	}
-}
-
+// ********************************************* validation *********************************************
 /**
  * check if all is validated and then login
  * @param {string} redirect redirect page
@@ -92,18 +82,23 @@ function validateUsername(): boolean {
 	return validateRegex("username", /^[A-Za-z][A-Za-z0-9_]{3,30}$/);
 }
 
+// ********************************************* disable & submit *********************************************
+/**
+ * disable button if all inputs are ok
+ */
+function disableButton() {
+	const button = document.getElementById("btn") as HTMLButtonElement;
+	if (validateEmail() && validatePassword()) {
+		button.disabled = false;
+	} else {
+		button.disabled = true;
+	}
+}
+
 /**
  * submit form
  */
 function submitForm() {
 	const form = document.getElementById("form") as HTMLFormElement;
 	form.submit();
-}
-
-/**
- * get number of questions
- * @returns {number} length of quiz
- */
-function getQuizLength(): number {
-	return document.getElementById("questions").childElementCount;
 }

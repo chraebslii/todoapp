@@ -142,6 +142,3 @@ function saveTask() {
     task.appendChild(span);
     span.addEventListener("click", editTask);
 }
-function parseHTML(html) {
-    return new DOMParser().parseFromString(html, "text/html").body.firstChild;
-}

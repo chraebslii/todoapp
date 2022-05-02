@@ -40,6 +40,7 @@ updateCurrentSessionTimeout();
 </body>
 
 <script src="./js/init.js"></script>
+<script src="./js/functions.js"></script>
 <script src="./js/elements.js"></script>
 
 </html>
