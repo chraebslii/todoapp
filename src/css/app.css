@@ -5,6 +5,7 @@
 /** -------------------------------- list -------------------------------- */
 #app .list {
 	background-color: var(--list-bg-color);
+	margin: 2rem 0;
 }
 #app .list .header {
 	padding: 0.5rem;
