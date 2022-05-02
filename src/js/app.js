@@ -1,32 +1,9 @@
-function buildTasks() {
-    const listCont = document.getElementById("list-cont");
-    const taskList = getTaskList();
-    for (let i = 0; i < taskList.length; i++) {
-        const tasks = taskList[i].tasks;
-        const listElement = getListElement(taskList[i]);
-        listCont.appendChild(listElement);
-        for (let j = 0; j < tasks.length; j++) {
-            const task = tasks[j];
-            if (task.taskStatus === 0) {
-                listElement.querySelector("#open-task-cont").appendChild(getOpenTaskElement(task, taskList[i].listID));
-            }
-            else if (task.taskStatus === 1) {
-                listElement.querySelector("#done-task-cont").appendChild(getDoneTaskElement(task, taskList[i].listID));
-            }
-        }
-    }
-}
-function getTaskList() {
-    return JSON.parse(window.localStorage.getItem("taskList"));
-}
-function getListElement(list) {
-    const ID = list.listID;
-    const name = list.listName;
+function createListElement(listID, listName) {
     const listTemplate = `
 		<div class="list-cont" id="list-cont">
-			<div class="list" id="list-${ID}">
+			<div class="list" id="list-${listID}">
 				<div class="header f a row">
-					<span class="list-title f20">${name}</span>
+					<span class="list-title f20">${listName}</span>
 				</div>
 				<div class="content open f col">
 					<div class="items-cont-open" id="open-task-cont"></div>
@@ -45,25 +22,54 @@ function getListElement(list) {
 		</div>`;
     return parseHTML(listTemplate);
 }
-function getOpenTaskElement(task, listID) {
-    const ID = task.taskID;
-    const name = task.taskName;
+function createTaskElement(listID, taskID, taskName, status, type) {
+    let checked = "";
+    if (status === "done") {
+        checked = "checked";
+    }
+    let label = "";
+    if (type === "label") {
+        label = `<span for="li-${listID}-${taskID}">${taskName}</span>`;
+    }
+    else if (type === "input") {
+        label = `<input type="text" class="task-edit" value="" />`;
+    }
     const taskTemplate = `
 		<div class="items task f a row">
-			<input type="checkbox" id="li-${listID}-${ID}" name="li-${listID}-${ID}" />
-			<span for="li-${listID}-${ID}">${name}</span>
+			<input ${checked} type="checkbox" id="li-${listID}-${taskID}" name="li-${listID}-${taskID}" />
+			${label}
 		</div>`;
     return parseHTML(taskTemplate);
 }
-function getDoneTaskElement(task, listID) {
-    const ID = task.taskID;
-    const name = task.taskName;
-    const taskTemplate = `
-		<div class="items task f a row">
-			<input checked type="checkbox" id="li-${listID}-${ID}" name="li-${listID}-${ID}" />
-			<span for="li-${listID}-${ID}">${name}</span>
-		</div>`;
-    return parseHTML(taskTemplate);
+function buildTasks() {
+    const listCont = document.getElementById("list-cont");
+    const taskList = getTaskList();
+    for (let i = 0; i < taskList.length; i++) {
+        const listID = taskList[i].listID;
+        const listName = taskList[i].listName;
+        const listElement = createListElement(listID, listName);
+        listCont.appendChild(listElement);
+        const tasks = taskList[i].tasks;
+        for (let j = 0; j < tasks.length; j++) {
+            const task = tasks[j];
+            const taskID = task.taskID;
+            const taskName = task.taskName;
+            const taskStatus = task.taskStatus;
+            if (taskStatus === 0) {
+                listElement
+                    .querySelector("#open-task-cont")
+                    .appendChild(createTaskElement(listID, taskID, taskName, "open", "label"));
+            }
+            else if (taskStatus === 1) {
+                listElement
+                    .querySelector("#done-task-cont")
+                    .appendChild(createTaskElement(listID, taskID, taskName, "done", "label"));
+            }
+        }
+    }
+}
+function getTaskList() {
+    return JSON.parse(window.localStorage.getItem("taskList"));
 }
 function toggleDoneTasks(element) {
     element = element.parentNode;
@@ -103,12 +109,7 @@ function moveTaskToDoneOrOpen(task, selector) {
 function addTask(plusImg) {
     const listID = getListID(plusImg.parentNode.parentNode);
     const taskID = getNextTaskID(listID);
-    const taskTemplate = `
-        <div class="items task f a row">
-            <input type="checkbox" id="li-${listID}-${taskID}" name="li-${listID}-${taskID}" />
-            <input type="text" class="task-edit" value="" />
-        </div>`;
-    const taskElement = parseHTML(taskTemplate);
+    const taskElement = createTaskElement(listID, taskID, "", "open", "input");
     taskElement.querySelector("input").addEventListener("click", toggleTask);
     taskElement.querySelector(".task-edit").addEventListener("focusout", saveTask);
     document.querySelector(`#list-${listID}`).querySelector(".items-cont-open").appendChild(taskElement);
