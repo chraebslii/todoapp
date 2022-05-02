@@ -197,6 +197,15 @@ function getListID(list: HTMLDivElement) {
 }
 
 /**
+ * get task id of current task
+ * @param taskInput element of task
+ * @returns id of task as number
+ */
+function getTaskID(taskInput: HTMLDivElement) {
+	return parseInt(taskInput.getAttribute("id").split("-")[2]);
+}
+
+/**
  * get next task id of current list
  * @param listID id of list
  * @returns id for next task in list
@@ -230,7 +239,44 @@ function saveTask() {
 	const spanTemplate = `
         <span>${input.value}</span>`;
 	const span = parseHTML(spanTemplate);
+	const taskID = getTaskID(task.querySelector("input"));
+	saveTaskToDatabase(taskID, input.value);
 	task.removeChild(input);
 	task.appendChild(span);
 	span.addEventListener("click", editTask);
+}
+
+// ********************************************* save to database *********************************************
+/**
+ * save task to database
+ * @param taskID id of task
+ * @param taskName name of task
+ */
+function saveTaskToDatabase(taskID: number, taskName: string) {
+	saveToDatabase("./app/saveTask.php", { taskID: taskID, taskName: taskName });
+}
+
+/**
+ * post request to database
+ * @param path path to file
+ * @param params object with parameters
+ */
+function saveToDatabase(path: string, params: any) {
+	const form = document.createElement("form");
+	for (const key in params) {
+		if (params.hasOwnProperty(key)) {
+			const hiddenField = document.createElement("input");
+			hiddenField.type = "hidden";
+			hiddenField.name = key;
+			hiddenField.value = params[key];
+			form.appendChild(hiddenField);
+		}
+	}
+	document.body.appendChild(form);
+
+	// request
+	const AJAX = new XMLHttpRequest();
+	const data = new FormData(form);
+	AJAX.open("POST", path, true);
+	AJAX.send(data);
 }

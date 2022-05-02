@@ -118,6 +118,9 @@ function addTask(plusImg) {
 function getListID(list) {
     return parseInt(list.getAttribute("id").split("-")[1]);
 }
+function getTaskID(taskInput) {
+    return parseInt(taskInput.getAttribute("id").split("-")[2]);
+}
 function getNextTaskID(listID) {
     return document.querySelector(`#list-${listID}`).querySelector(".items-cont-open").children.length + 1;
 }
@@ -138,7 +141,29 @@ function saveTask() {
     const spanTemplate = `
         <span>${input.value}</span>`;
     const span = parseHTML(spanTemplate);
+    const taskID = getTaskID(task.querySelector("input"));
+    saveTaskToDatabase(taskID, input.value);
     task.removeChild(input);
     task.appendChild(span);
     span.addEventListener("click", editTask);
+}
+function saveTaskToDatabase(taskID, taskName) {
+    saveToDatabase("./app/saveTask.php", { taskID: taskID, taskName: taskName });
+}
+function saveToDatabase(path, params) {
+    const form = document.createElement("form");
+    for (const key in params) {
+        if (params.hasOwnProperty(key)) {
+            const hiddenField = document.createElement("input");
+            hiddenField.type = "hidden";
+            hiddenField.name = key;
+            hiddenField.value = params[key];
+            form.appendChild(hiddenField);
+        }
+    }
+    document.body.appendChild(form);
+    const AJAX = new XMLHttpRequest();
+    const data = new FormData(form);
+    AJAX.open("POST", path, true);
+    AJAX.send(data);
 }
