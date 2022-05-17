@@ -43,7 +43,13 @@ function createTaskElement(listID, taskID, taskName, status, type) {
 }
 function buildTasks() {
     const listCont = document.getElementById("list-cont");
-    const taskList = getTaskList();
+    const taskList = getAllLists();
+    if (taskList === null) {
+        sleep(1000).then(() => {
+            buildTasks();
+        });
+        return;
+    }
     for (let i = 0; i < taskList.length; i++) {
         const listID = taskList[i].listID;
         const listName = taskList[i].listName;
@@ -67,9 +73,6 @@ function buildTasks() {
             }
         }
     }
-}
-function getTaskList() {
-    return JSON.parse(window.localStorage.getItem("taskList"));
 }
 function toggleDoneTasks(element) {
     element = element.parentNode;
@@ -159,7 +162,7 @@ function saveTaskToDatabase(taskID, taskName, taskStatus) {
 function saveNewTaskToDatabase(listID, taskName, taskStatus) {
     saveToDatabase("./app/saveNewTask.php", { listID: listID, taskName: taskName, taskStatus: taskStatus });
 }
-function saveToDatabase(path, params) {
+function saveToDatabase(url, params) {
     const form = document.createElement("form");
     for (const key in params) {
         if (params.hasOwnProperty(key)) {
@@ -171,8 +174,25 @@ function saveToDatabase(path, params) {
         }
     }
     document.body.appendChild(form);
-    const AJAX = new XMLHttpRequest();
+    const request = new XMLHttpRequest();
     const data = new FormData(form);
-    AJAX.open("POST", path, true);
-    AJAX.send(data);
+    request.open("POST", url, true);
+    request.send(data);
+}
+function getAllLists() {
+    const name = "taskListArr";
+    console.log(getFromDatabase("./app/getLists.php", name));
+    const data = JSON.parse(window.localStorage.getItem(name));
+    window.localStorage.removeItem(name);
+    return data;
+}
+function getFromDatabase(url, name) {
+    const request = new XMLHttpRequest();
+    request.open("GET", url, true);
+    request.send();
+    request.onreadystatechange = () => {
+        if (request.readyState === 4 && request.status === 200) {
+            window.localStorage.setItem(name, request.responseText);
+        }
+    };
 }

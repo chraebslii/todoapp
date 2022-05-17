@@ -14,11 +14,6 @@ if (validateCurrentSession()){
     exit;
 }
 
-$userID = intval($_SESSION['userID']);
-
-$taskListJSON = json_encode(formatLists(getAllLists($userID)));
-echo "<script type='text/javascript'>window.localStorage.setItem('taskList', JSON.stringify($taskListJSON))</script>";
-
 ?>
 
 <!DOCTYPE html>

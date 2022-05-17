@@ -1,3 +1,16 @@
+// ********************************************* interfaces *********************************************
+interface TaskList {
+	listID: number;
+	listName: string;
+	listUserID: number;
+	tasks: Task[];
+}
+interface Task {
+	taskID: number;
+	taskName: string;
+	taskStatus: 0 | 1;
+}
+
 // ********************************************* create elements *********************************************
 /**
  * create list element
@@ -63,26 +76,20 @@ function createTaskElement(
 		</div>`;
 	return parseHTML(taskTemplate);
 }
-// ********************************************* build tasks *********************************************
-interface TaskList {
-	listID: number;
-	listName: string;
-	listUserID: number;
-	tasks: Task[];
-}
-interface Task {
-	taskID: number;
-	taskName: string;
-	taskStatus: 0 | 1;
-}
 
+// ********************************************* build tasks *********************************************
 /**
  * build the tasks from localStorage and append them to the lists
  */
 function buildTasks() {
 	const listCont = document.getElementById("list-cont");
-	const taskList = getTaskList();
-
+	const taskList = getAllLists();
+	if (taskList === null) {
+		sleep(1000).then(() => {
+			buildTasks();
+		});
+		return;
+	}
 	for (let i = 0; i < taskList.length; i++) {
 		const listID = taskList[i].listID;
 		const listName = taskList[i].listName;
@@ -107,14 +114,6 @@ function buildTasks() {
 			}
 		}
 	}
-}
-
-/**
- * get task object from localStorage and return it
- * @returns the task list from localStorage
- */
-function getTaskList() {
-	return JSON.parse(window.localStorage.getItem("taskList"));
 }
 
 // ********************************************* toggle tasks *********************************************
@@ -279,10 +278,10 @@ function saveNewTaskToDatabase(listID: number, taskName: string, taskStatus: 0 |
 
 /**
  * post request to database
- * @param path path to file
+ * @param url path to file
  * @param params object with parameters
  */
-function saveToDatabase(path: string, params: any) {
+function saveToDatabase(url: string, params: any) {
 	const form = document.createElement("form");
 	for (const key in params) {
 		if (params.hasOwnProperty(key)) {
@@ -296,8 +295,36 @@ function saveToDatabase(path: string, params: any) {
 	document.body.appendChild(form);
 
 	// request
-	const AJAX = new XMLHttpRequest();
+	const request = new XMLHttpRequest();
 	const data = new FormData(form);
-	AJAX.open("POST", path, true);
-	AJAX.send(data);
+	request.open("POST", url, true);
+	request.send(data);
+}
+
+// ********************************************* get from database *********************************************
+/**
+ * get all tasks from database
+ * @returns array with all lists
+ */
+function getAllLists(): TaskList[] {
+	const name = "taskListArr";
+	console.log(getFromDatabase("./app/getLists.php", name));
+	const data = JSON.parse(window.localStorage.getItem(name)) as TaskList[];
+	window.localStorage.removeItem(name);
+	return data;
+}
+
+/**
+ * get data from database
+ * @param url path to file
+ */
+function getFromDatabase(url: string, name: string) {
+	const request = new XMLHttpRequest();
+	request.open("GET", url, true);
+	request.send();
+	request.onreadystatechange = () => {
+		if (request.readyState === 4 && request.status === 200) {
+			window.localStorage.setItem(name, request.responseText);
+		}
+	};
 }

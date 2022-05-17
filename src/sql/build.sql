@@ -23,6 +23,7 @@ create table if not exists Lists (
     listID int not null auto_increment,
     listName VARCHAR(30) not null,
     listUserID int not null,
+    lastSaved datetime default current_timestamp on update current_timestamp,
     primary key (listID),
     foreign key (listUserID) references Users(userID)
 );
@@ -31,6 +32,7 @@ create table if not exists Tasks (
     taskName VARCHAR(30) not null,
     taskListID int not null,
     taskStatus int not null,
+    lastSaved datetime default current_timestamp on update current_timestamp,
     primary key (taskID),
     foreign key (taskListID) references Lists(listID)
 );
