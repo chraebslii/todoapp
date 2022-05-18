@@ -2,7 +2,7 @@
 
 /**
  * connect to database
- * @return mixed connection to database
+ * @return mysqli connection to database
  */
 function connectToDatabase() {
     $con = new mysqli('127.0.0.1', 'web', '123456','TodoApp', 12345);
@@ -15,7 +15,7 @@ function connectToDatabase() {
 /**
  * create an sql query and get result
  * @param string $sql sql query
- * @return mixed result of query
+ * @return mysqli_result|bool result of query
  */
 function SQLQuery($sql){
     return connectToDatabase()->query($sql);
@@ -24,7 +24,7 @@ function SQLQuery($sql){
 /**
  * execute SQL query and return inserted ID
  * @param string $sql sql query
- * @return int id of inserted row
+ * @return int|false id of inserted row
  */
 function insertSQL($sql){
     $con = connectToDatabase();
@@ -32,6 +32,7 @@ function insertSQL($sql){
         return $con->insert_id;
     } else {
         echo "Error: $sql <br> $con->error";
+        return false;
     }
 }
 

@@ -5,6 +5,5 @@ window.onload = () => {
 	setMainSize();
 
 	// app.ts
-	buildTasks();
-	setEventListenerOnTasks();
+	new App();
 };

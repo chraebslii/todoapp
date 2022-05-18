@@ -1,14 +1,22 @@
 // ********************************************* interfaces *********************************************
+interface App {
+	taskLists: TaskList[];
+}
 interface TaskList {
 	listID: number;
 	listName: string;
 	listUserID: number;
-	tasks: Task[];
+	tasks: TaskItem[];
+	listElement: HTMLElement;
 }
-interface Task {
+interface TaskItem {
 	taskID: number;
 	taskName: string;
 	taskStatus: 0 | 1;
+	listID: number;
+	taskElement: HTMLElement;
+	updateInterval: NodeJS.Timer;
+	lastSaved: Date;
 }
 
 // ********************************************* create elements *********************************************
@@ -78,41 +86,134 @@ function createTaskElement(
 }
 
 // ********************************************* build tasks *********************************************
-/**
- * build the tasks from localStorage and append them to the lists
- */
-function buildTasks() {
-	const listCont = document.getElementById("list-cont");
-	const taskList = getAllLists();
-	if (taskList === null) {
-		sleep(1000).then(() => {
-			buildTasks();
-		});
-		return;
+class App {
+	constructor() {
+		this.buildLists();
+		setEventListenerOnTasks();
 	}
-	for (let i = 0; i < taskList.length; i++) {
-		const listID = taskList[i].listID;
-		const listName = taskList[i].listName;
-		const listElement = createListElement(listID, listName);
-		listCont.appendChild(listElement);
 
-		const tasks = taskList[i].tasks;
-		for (let j = 0; j < tasks.length; j++) {
-			const task = tasks[j];
-			const taskID = task.taskID;
-			const taskName = task.taskName;
-			const taskStatus = task.taskStatus;
-
-			if (taskStatus === 0) {
-				listElement
-					.querySelector("#open-task-cont")
-					.appendChild(createTaskElement(listID, taskID, taskName, "open", "label"));
-			} else if (taskStatus === 1) {
-				listElement
-					.querySelector("#done-task-cont")
-					.appendChild(createTaskElement(listID, taskID, taskName, "done", "label"));
-			}
+	/**
+	 * build the tasks from localStorage and append them to the lists
+	 */
+	buildLists() {
+		const taskList = getAllLists();
+		if (taskList === null) {
+			sleep(1000).then(() => {
+				this.buildLists();
+			});
+			return;
 		}
+
+		this.taskLists = [];
+		for (let i = 0; i < taskList.length; i++) {
+			const list = new TaskList(taskList[i]);
+			this.taskLists.push(list);
+		}
+	}
+}
+
+class TaskList {
+	constructor(TaskList: TaskList) {
+		this.listID = TaskList.listID;
+		this.listName = TaskList.listName;
+		this.listUserID = TaskList.listUserID;
+		this.buildList();
+
+		this.tasks = [];
+		for (let i = 0; i < TaskList.tasks.length; i++) {
+			const task = new TaskItem(TaskList.tasks[i], this.listID, this.listElement);
+			this.tasks.push(task);
+		}
+	}
+
+	/**
+	 * build the list element
+	 */
+	buildList() {
+		const listCont = document.getElementById("list-cont");
+		const listElement = createListElement(this.listID, this.listName);
+		listCont.appendChild(listElement);
+		this.listElement = listElement;
+	}
+
+	updateList() {}
+}
+
+class TaskItem {
+	constructor(TaskItem: TaskItem, listID: number, listElement: HTMLElement) {
+		this.taskID = TaskItem.taskID;
+		this.taskName = TaskItem.taskName;
+		this.taskStatus = TaskItem.taskStatus;
+		this.lastSaved = new Date(TaskItem.lastSaved);
+		this.listID = listID;
+		this.buildTask(listElement);
+	}
+
+	/**
+	 * build the task element
+	 * @param listElement list element
+	 */
+	buildTask(listElement: HTMLElement) {
+		if (this.taskStatus === 0) {
+			listElement
+				.querySelector("#open-task-cont")
+				.appendChild(createTaskElement(this.listID, this.taskID, this.taskName, "open", "label"));
+		} else if (this.taskStatus === 1) {
+			listElement
+				.querySelector("#done-task-cont")
+				.appendChild(createTaskElement(this.listID, this.taskID, this.taskName, "done", "label"));
+		}
+		this.taskElement = document.getElementById(`li-${this.listID}-${this.taskID}`);
+		this.updateInterval = setInterval(this.updateTask, 5000, this);
+	}
+
+	/**
+	 * connector of task updater because of setInterval
+	 */
+	updateTaskConnection(self: TaskItem) {
+		this.updateTask(self);
+	}
+
+	/**
+	 * update task
+	 * @param taskItem task item
+	 */
+	updateTask(taskItem: TaskItem) {
+		const updatedTask = taskItem.getUpdatedDateTime();
+
+		if (updatedTask.update !== false) {
+			const newTaskItem = updatedTask.newTaskItem;
+			taskItem.taskName = newTaskItem.taskName;
+			taskItem.lastSaved = new Date(newTaskItem.lastSaved);
+			taskItem.updateTaskHTML(newTaskItem);
+			console.log(`task with id ${taskItem.taskID} has to be updated`);
+		} else {
+			//console.log(`task with id ${taskItem.taskID} is up to date`);
+		}
+	}
+
+	/**
+	 * check if task needs to be updated
+	 * @returns {{ update: boolean; newTaskItem: TaskItem }} update: true if task needs to be updated, false if not, newTaskItem: updated task item
+	 */
+	getUpdatedDateTime(): { update: boolean; newTaskItem: TaskItem } {
+		const newTask = getNewTaskItem(this.taskID);
+		newTask.lastSaved = new Date(newTask.lastSaved);
+
+		if (this.lastSaved < newTask.lastSaved) {
+			return { update: true, newTaskItem: newTask };
+		} else {
+			return { update: false, newTaskItem: newTask };
+		}
+	}
+
+	/**
+	 * update HTML of the current task
+	 * @param taskItem updated task item
+	 */
+	updateTaskHTML(taskItem: TaskItem) {
+		const item = this.taskElement.parentElement.children[1];
+		item.innerHTML = taskItem.taskName;
 	}
 }
 
@@ -308,8 +409,21 @@ function saveToDatabase(url: string, params: any) {
  */
 function getAllLists(): TaskList[] {
 	const name = "taskListArr";
-	console.log(getFromDatabase("./app/getLists.php", name));
+	getFromDatabase("./app/getLists.php", name);
 	const data = JSON.parse(window.localStorage.getItem(name)) as TaskList[];
+	window.localStorage.removeItem(name);
+	return data;
+}
+
+/**
+ * get single task from database with id
+ * @param taskID id of task
+ * @returns task as json object
+ */
+function getNewTaskItem(taskID: number) {
+	const name = `taskItem-${taskID}`;
+	getFromDatabase(`./app/getTask.php?id=${taskID}`, name);
+	const data = JSON.parse(window.localStorage.getItem(name)) as TaskItem;
 	window.localStorage.removeItem(name);
 	return data;
 }

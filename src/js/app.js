@@ -41,37 +41,97 @@ function createTaskElement(listID, taskID, taskName, status, type) {
 		</div>`;
     return parseHTML(taskTemplate);
 }
-function buildTasks() {
-    const listCont = document.getElementById("list-cont");
-    const taskList = getAllLists();
-    if (taskList === null) {
-        sleep(1000).then(() => {
-            buildTasks();
-        });
-        return;
+class App {
+    constructor() {
+        this.buildLists();
+        setEventListenerOnTasks();
     }
-    for (let i = 0; i < taskList.length; i++) {
-        const listID = taskList[i].listID;
-        const listName = taskList[i].listName;
-        const listElement = createListElement(listID, listName);
-        listCont.appendChild(listElement);
-        const tasks = taskList[i].tasks;
-        for (let j = 0; j < tasks.length; j++) {
-            const task = tasks[j];
-            const taskID = task.taskID;
-            const taskName = task.taskName;
-            const taskStatus = task.taskStatus;
-            if (taskStatus === 0) {
-                listElement
-                    .querySelector("#open-task-cont")
-                    .appendChild(createTaskElement(listID, taskID, taskName, "open", "label"));
-            }
-            else if (taskStatus === 1) {
-                listElement
-                    .querySelector("#done-task-cont")
-                    .appendChild(createTaskElement(listID, taskID, taskName, "done", "label"));
-            }
+    buildLists() {
+        const taskList = getAllLists();
+        if (taskList === null) {
+            sleep(1000).then(() => {
+                this.buildLists();
+            });
+            return;
         }
+        this.taskLists = [];
+        for (let i = 0; i < taskList.length; i++) {
+            const list = new TaskList(taskList[i]);
+            this.taskLists.push(list);
+        }
+    }
+}
+class TaskList {
+    constructor(TaskList) {
+        this.listID = TaskList.listID;
+        this.listName = TaskList.listName;
+        this.listUserID = TaskList.listUserID;
+        this.buildList();
+        this.tasks = [];
+        for (let i = 0; i < TaskList.tasks.length; i++) {
+            const task = new TaskItem(TaskList.tasks[i], this.listID, this.listElement);
+            this.tasks.push(task);
+        }
+    }
+    buildList() {
+        const listCont = document.getElementById("list-cont");
+        const listElement = createListElement(this.listID, this.listName);
+        listCont.appendChild(listElement);
+        this.listElement = listElement;
+    }
+    updateList() { }
+}
+class TaskItem {
+    constructor(TaskItem, listID, listElement) {
+        this.taskID = TaskItem.taskID;
+        this.taskName = TaskItem.taskName;
+        this.taskStatus = TaskItem.taskStatus;
+        this.lastSaved = new Date(TaskItem.lastSaved);
+        this.listID = listID;
+        this.buildTask(listElement);
+    }
+    buildTask(listElement) {
+        if (this.taskStatus === 0) {
+            listElement
+                .querySelector("#open-task-cont")
+                .appendChild(createTaskElement(this.listID, this.taskID, this.taskName, "open", "label"));
+        }
+        else if (this.taskStatus === 1) {
+            listElement
+                .querySelector("#done-task-cont")
+                .appendChild(createTaskElement(this.listID, this.taskID, this.taskName, "done", "label"));
+        }
+        this.taskElement = document.getElementById(`li-${this.listID}-${this.taskID}`);
+        this.updateInterval = setInterval(this.updateTask, 5000, this);
+    }
+    updateTaskConnection(self) {
+        this.updateTask(self);
+    }
+    updateTask(taskItem) {
+        const updatedTask = taskItem.getUpdatedDateTime();
+        if (updatedTask.update !== false) {
+            const newTaskItem = updatedTask.newTaskItem;
+            taskItem.taskName = newTaskItem.taskName;
+            taskItem.lastSaved = new Date(newTaskItem.lastSaved);
+            taskItem.updateTaskHTML(newTaskItem);
+            console.log(`task with id ${taskItem.taskID} has to be updated`);
+        }
+        else {
+        }
+    }
+    getUpdatedDateTime() {
+        const newTask = getNewTaskItem(this.taskID);
+        newTask.lastSaved = new Date(newTask.lastSaved);
+        if (this.lastSaved < newTask.lastSaved) {
+            return { update: true, newTaskItem: newTask };
+        }
+        else {
+            return { update: false, newTaskItem: newTask };
+        }
+    }
+    updateTaskHTML(taskItem) {
+        const item = this.taskElement.parentElement.children[1];
+        item.innerHTML = taskItem.taskName;
     }
 }
 function toggleDoneTasks(element) {
@@ -181,7 +241,14 @@ function saveToDatabase(url, params) {
 }
 function getAllLists() {
     const name = "taskListArr";
-    console.log(getFromDatabase("./app/getLists.php", name));
+    getFromDatabase("./app/getLists.php", name);
+    const data = JSON.parse(window.localStorage.getItem(name));
+    window.localStorage.removeItem(name);
+    return data;
+}
+function getNewTaskItem(taskID) {
+    const name = `taskItem-${taskID}`;
+    getFromDatabase(`./app/getTask.php?id=${taskID}`, name);
     const data = JSON.parse(window.localStorage.getItem(name));
     window.localStorage.removeItem(name);
     return data;
