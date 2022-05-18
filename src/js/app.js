@@ -42,35 +42,44 @@ function createTaskElement(listID, taskID, taskName, status, type) {
     return parseHTML(taskTemplate);
 }
 class App {
-    constructor() {
+    constructor({ updateIntervalTime: updateIntervalTime }) {
+        this.config = {
+            updateIntervalTime: updateIntervalTime,
+        };
         this.buildLists();
         setEventListenerOnTasks();
     }
     buildLists() {
-        const taskList = getAllLists();
-        if (taskList === null) {
+        const taskLists = getAllLists();
+        if (taskLists === null) {
             sleep(1000).then(() => {
                 this.buildLists();
             });
             return;
         }
         this.taskLists = [];
-        for (let i = 0; i < taskList.length; i++) {
-            const list = new TaskList(taskList[i]);
+        for (let i = 0; i < taskLists.length; i++) {
+            const list = new TaskList(taskLists[i], this.config.updateIntervalTime);
             this.taskLists.push(list);
         }
     }
 }
 class TaskList {
-    constructor(TaskList) {
-        this.listID = TaskList.listID;
-        this.listName = TaskList.listName;
-        this.listUserID = TaskList.listUserID;
+    constructor(taskList, updateIntervalTime) {
+        this.listID = taskList.listID;
+        this.listName = taskList.listName;
+        this.listUserID = taskList.listUserID;
         this.buildList();
-        this.tasks = [];
-        for (let i = 0; i < TaskList.tasks.length; i++) {
-            const task = new TaskItem(TaskList.tasks[i], this.listID, this.listElement);
-            this.tasks.push(task);
+        this.taskItems = [];
+        for (let i = 0; i < taskList.tasks.length; i++) {
+            const taskConfig = {
+                taskItem: taskList.tasks[i],
+                listID: this.listID,
+                listElement: this.listElement,
+                updateIntervalTime: updateIntervalTime,
+            };
+            const task = new TaskItem(taskConfig);
+            this.taskItems.push(task);
         }
     }
     buildList() {
@@ -82,15 +91,15 @@ class TaskList {
     updateList() { }
 }
 class TaskItem {
-    constructor(TaskItem, listID, listElement) {
-        this.taskID = TaskItem.taskID;
-        this.taskName = TaskItem.taskName;
-        this.taskStatus = TaskItem.taskStatus;
-        this.lastSaved = new Date(TaskItem.lastSaved);
-        this.listID = listID;
-        this.buildTask(listElement);
+    constructor(taskConfig) {
+        this.taskID = taskConfig.taskItem.taskID;
+        this.taskName = taskConfig.taskItem.taskName;
+        this.taskStatus = taskConfig.taskItem.taskStatus;
+        this.lastSaved = new Date(taskConfig.taskItem.lastSaved);
+        this.listID = taskConfig.listID;
+        this.buildTask(taskConfig.listElement, taskConfig.updateIntervalTime);
     }
-    buildTask(listElement) {
+    buildTask(listElement, updateIntervalTime) {
         if (this.taskStatus === 0) {
             listElement
                 .querySelector("#open-task-cont")
@@ -102,7 +111,7 @@ class TaskItem {
                 .appendChild(createTaskElement(this.listID, this.taskID, this.taskName, "done", "label"));
         }
         this.taskElement = document.getElementById(`li-${this.listID}-${this.taskID}`);
-        this.updateInterval = setInterval(this.updateTask, 5000, this);
+        this.updateInterval = setInterval(this.updateTask, updateIntervalTime, this);
     }
     updateTaskConnection(self) {
         this.updateTask(self);

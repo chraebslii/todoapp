@@ -2,5 +2,6 @@ window.onload = () => {
     setHeaderToDOM();
     setFooterToDOM();
     setMainSize();
-    new App();
+    const appConfig = { updateIntervalTime: 10000 };
+    new App(appConfig);
 };

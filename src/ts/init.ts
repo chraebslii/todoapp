@@ -5,5 +5,6 @@ window.onload = () => {
 	setMainSize();
 
 	// app.ts
-	new App();
+	const appConfig = { updateIntervalTime: 10000 };
+	new App(appConfig);
 };
