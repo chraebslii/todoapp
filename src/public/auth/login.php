@@ -31,7 +31,7 @@ if ($_SERVER['REQUEST_METHOD'] == 'POST'){
     <title>Login | Todo list | chraebsli.dev</title>
 </head>
 
-<body onload="setEventListener('pe')">
+<body>
     <header id="header"></header>
 
     <main id="main" class="f c a col">

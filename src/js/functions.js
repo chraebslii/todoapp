@@ -4,3 +4,8 @@ function parseHTML(html) {
 function sleep(ms) {
     return new Promise((resolve) => setTimeout(resolve, ms));
 }
+function getSiteName() {
+    const url = window.location.href.split("/");
+    const siteName = url[url.length - 1].split(".")[0];
+    return siteName;
+}
