@@ -30,7 +30,6 @@ function validation(redirect: string) {
 	} else if (redirect === "login") {
 		if (validateEmail() && validatePassword()) {
 			submitForm();
-		} else {
 		}
 	}
 }

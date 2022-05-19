@@ -9,12 +9,12 @@ function createListElement(listID, listName) {
 					<div class="items-cont-open" id="open-task-cont"></div>
 				</div>
 				<div class="add-task">
-					<img src="./assets/i/plus.svg" alt="plus icon" class="i" onclick="addTask(this)" />
+					<img src="../assets/i/plus.svg" alt="plus icon" class="i" onclick="addTask(this)" />
 				</div>
 				<div class="content done f col" data-toggle="closed">
 					<div class="toggle-header f a row" onclick="toggleDoneTasks(this)">
 						<span>abgehakte </span>
-						<img src="./assets/i/expand-more.svg" alt="expand icon" class="i toggle-tasks-icon" />
+						<img src="../assets/i/expand-more.svg" alt="expand icon" class="i toggle-tasks-icon" />
 					</div>
 					<div class="items-cont-done" id="done-task-cont"></div>
 				</div>
@@ -148,11 +148,11 @@ function toggleDoneTasks(element) {
     const toggleArrow = element.querySelector(".toggle-tasks-icon");
     if (element.dataset.toggle === "open") {
         element.dataset.toggle = "closed";
-        toggleArrow.src = "./assets/i/expand-more.svg";
+        toggleArrow.src = "../assets/i/expand-more.svg";
     }
     else {
         element.dataset.toggle = "open";
-        toggleArrow.src = "./assets/i/expand-less.svg";
+        toggleArrow.src = "../assets/i/expand-less.svg";
     }
 }
 function setEventListenerOnTasks() {
@@ -226,10 +226,10 @@ function saveTask() {
     span.addEventListener("click", editTask);
 }
 function saveTaskToDatabase(taskID, taskName, taskStatus) {
-    saveToDatabase("./app/saveTask.php", { taskID: taskID, taskName: taskName, taskStatus: taskStatus });
+    saveToDatabase("../app/saveTask.php", { taskID: taskID, taskName: taskName, taskStatus: taskStatus });
 }
 function saveNewTaskToDatabase(listID, taskName, taskStatus) {
-    saveToDatabase("./app/saveNewTask.php", { listID: listID, taskName: taskName, taskStatus: taskStatus });
+    saveToDatabase("../app/saveNewTask.php", { listID: listID, taskName: taskName, taskStatus: taskStatus });
 }
 function saveToDatabase(url, params) {
     const form = document.createElement("form");
@@ -250,14 +250,14 @@ function saveToDatabase(url, params) {
 }
 function getAllLists() {
     const name = "taskListArr";
-    getFromDatabase("./app/getLists.php", name);
+    getFromDatabase("../app/getLists.php", name);
     const data = JSON.parse(window.localStorage.getItem(name));
     window.localStorage.removeItem(name);
     return data;
 }
 function getNewTaskItem(taskID) {
     const name = `taskItem-${taskID}`;
-    getFromDatabase(`./app/getTask.php?id=${taskID}`, name);
+    getFromDatabase(`../app/getTask.php?id=${taskID}`, name);
     const data = JSON.parse(window.localStorage.getItem(name));
     window.localStorage.removeItem(name);
     return data;

@@ -1,8 +1,8 @@
 <?php 
 
-include "./php/db.php";
-include "./php/auth.php";
-include "./php/app.php";
+include "../php/db.php";
+include "../php/auth.php";
+include "../php/app.php";
 
 // check if user is logged in
 startSessionWithTimeout();
@@ -17,9 +17,9 @@ updateCurrentSessionTimeout();
 <head>
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <link rel="stylesheet" href="./css/main.css" />
-    <link rel="stylesheet" href="./css/elements.css" />
-    <link rel="shortcut icon" href="./assets/favicon.svg" />
+    <link rel="stylesheet" href="../css/main.css" />
+    <link rel="stylesheet" href="../css/elements.css" />
+    <link rel="shortcut icon" href="../assets/favicon.svg" />
     <title>Todo list | chraebsli.dev</title>
 </head>
 
@@ -39,8 +39,8 @@ updateCurrentSessionTimeout();
     <footer id="footer"></footer>
 </body>
 
-<script src="./js/init.js"></script>
-<script src="./js/functions.js"></script>
-<script src="./js/elements.js"></script>
+<script src="../js/init.js"></script>
+<script src="../js/functions.js"></script>
+<script src="../js/elements.js"></script>
 
 </html>

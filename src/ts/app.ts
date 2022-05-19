@@ -52,12 +52,12 @@ function createListElement(listID: number, listName: string) {
 					<div class="items-cont-open" id="open-task-cont"></div>
 				</div>
 				<div class="add-task">
-					<img src="./assets/i/plus.svg" alt="plus icon" class="i" onclick="addTask(this)" />
+					<img src="../assets/i/plus.svg" alt="plus icon" class="i" onclick="addTask(this)" />
 				</div>
 				<div class="content done f col" data-toggle="closed">
 					<div class="toggle-header f a row" onclick="toggleDoneTasks(this)">
 						<span>abgehakte </span>
-						<img src="./assets/i/expand-more.svg" alt="expand icon" class="i toggle-tasks-icon" />
+						<img src="../assets/i/expand-more.svg" alt="expand icon" class="i toggle-tasks-icon" />
 					</div>
 					<div class="items-cont-done" id="done-task-cont"></div>
 				</div>
@@ -254,10 +254,10 @@ function toggleDoneTasks(element: HTMLDivElement) {
 	const toggleArrow = element.querySelector(".toggle-tasks-icon") as HTMLImageElement;
 	if (element.dataset.toggle === "open") {
 		element.dataset.toggle = "closed";
-		toggleArrow.src = "./assets/i/expand-more.svg";
+		toggleArrow.src = "../assets/i/expand-more.svg";
 	} else {
 		element.dataset.toggle = "open";
-		toggleArrow.src = "./assets/i/expand-less.svg";
+		toggleArrow.src = "../assets/i/expand-less.svg";
 	}
 }
 
@@ -390,7 +390,7 @@ function saveTask() {
  * @param taskStatus status of task
  */
 function saveTaskToDatabase(taskID: number, taskName: string, taskStatus: 0 | 1) {
-	saveToDatabase("./app/saveTask.php", { taskID: taskID, taskName: taskName, taskStatus: taskStatus });
+	saveToDatabase("../app/saveTask.php", { taskID: taskID, taskName: taskName, taskStatus: taskStatus });
 }
 
 /**
@@ -400,7 +400,7 @@ function saveTaskToDatabase(taskID: number, taskName: string, taskStatus: 0 | 1)
  * @param taskStatus status of task
  */
 function saveNewTaskToDatabase(listID: number, taskName: string, taskStatus: 0 | 1) {
-	saveToDatabase("./app/saveNewTask.php", { listID: listID, taskName: taskName, taskStatus: taskStatus });
+	saveToDatabase("../app/saveNewTask.php", { listID: listID, taskName: taskName, taskStatus: taskStatus });
 }
 
 /**
@@ -435,7 +435,7 @@ function saveToDatabase(url: string, params: any) {
  */
 function getAllLists(): TaskList[] {
 	const name = "taskListArr";
-	getFromDatabase("./app/getLists.php", name);
+	getFromDatabase("../app/getLists.php", name);
 	const data = JSON.parse(window.localStorage.getItem(name)) as TaskList[];
 	window.localStorage.removeItem(name);
 	return data;
@@ -448,7 +448,7 @@ function getAllLists(): TaskList[] {
  */
 function getNewTaskItem(taskID: number) {
 	const name = `taskItem-${taskID}`;
-	getFromDatabase(`./app/getTask.php?id=${taskID}`, name);
+	getFromDatabase(`../app/getTask.php?id=${taskID}`, name);
 	const data = JSON.parse(window.localStorage.getItem(name)) as TaskItem;
 	window.localStorage.removeItem(name);
 	return data;

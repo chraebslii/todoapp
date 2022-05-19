@@ -21,8 +21,6 @@ function validation(redirect) {
         if (validateEmail() && validatePassword()) {
             submitForm();
         }
-        else {
-        }
     }
 }
 function validateRegex(id, regex) {

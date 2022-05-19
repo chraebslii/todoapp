@@ -1,15 +1,29 @@
 // ********************************************* root path *********************************************
 /**
- * get the root path of the website
- * @returns the root path of the website
+ * get path of the website for out-public folders
+ * @returns path for items
  */
 function getRootPath() {
 	const path = window.location.pathname.split("/");
 	const roots = ["auth"];
 	if (roots.includes(path[path.length - 2])) {
-		return "../";
+		return "../../";
 	} else {
-		return "./";
+		return "../";
+	}
+}
+
+/**
+ * get path of the website for in-public folders
+ * @returns path for pages
+ */
+function getLocalRootPath() {
+	const path = window.location.pathname.split("/");
+	const roots = ["auth"];
+	if (roots.includes(path[path.length - 2])) {
+		return "../../";
+	} else {
+		return "../";
 	}
 }
 
@@ -57,11 +71,12 @@ function setFooterToDOM() {
  * @returns footer element
  */
 function createFooterElement() {
+	const r = getLocalRootPath();
 	const footerTemplate = `
 	<div class="container f c a row">
-	<a href="./impressum.php">Impressum</a>
-	<a href="./kontakt.php">Kontakt</a>
-	<a href="./datenschutz.php">Datenschutz</a>
+	<a href="${r}impressum.php">Impressum</a>
+	<a href="${r}kontakt.php">Kontakt</a>
+	<a href="${r}datenschutz.php">Datenschutz</a>
 	</div>`;
 	return parseHTML(footerTemplate);
 }

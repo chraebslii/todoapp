@@ -1,7 +1,7 @@
 <?php 
 
-include "../php/db.php";
-include "../php/auth.php";
+include "../../php/db.php";
+include "../../php/auth.php";
 
 // check if post request and authenticate user
 if ($_SERVER['REQUEST_METHOD'] == 'POST'){
@@ -24,10 +24,10 @@ if ($_SERVER['REQUEST_METHOD'] == 'POST'){
 <head>
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <link rel="stylesheet" href="../css/main.css" />
-    <link rel="stylesheet" href="../css/elements.css" />
-    <link rel="stylesheet" href="../css/auth.css" />
-    <link rel="shortcut icon" href="../assets/favicon.svg" />
+    <link rel="stylesheet" href="../../css/main.css" />
+    <link rel="stylesheet" href="../../css/elements.css" />
+    <link rel="stylesheet" href="../../css/auth.css" />
+    <link rel="shortcut icon" href="../../assets/favicon.svg" />
     <title>Login | Todo list | chraebsli.dev</title>
 </head>
 
@@ -54,9 +54,9 @@ if ($_SERVER['REQUEST_METHOD'] == 'POST'){
     <footer id="footer"></footer>
 </body>
 
-<script src="../js/init.js"></script>
-<script src="../js/functions.js"></script>
-<script src="../js/auth.js"></script>
-<script src="../js/elements.js"></script>
+<script src="../../js/init.js"></script>
+<script src="../../js/functions.js"></script>
+<script src="../../js/auth.js"></script>
+<script src="../../js/elements.js"></script>
 
 </html>
